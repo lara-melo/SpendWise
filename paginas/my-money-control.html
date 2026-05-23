@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpendWise | My Money Control</title>
+  <link rel="stylesheet" href="../styles.css">
+  <!-- Adicionando FontAwesome para os ícones de tecnologia -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Navegação Principal -->
+  <header>
+    <div class="logo" style="display: flex; align-items: center; gap: 10px;">
+      <img src="../projeto/imagens/logo-principal.png" alt="SpendWise Logo" style="height: 40px; width: auto;">
+      <span>Spend<em>Wise</em></span>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="../index.html">Início</a></li>
+        <li><a href="sprints.html">Sprints</a></li>
+        <li><a href="equipe.html">Equipe</a></li>
+        <li><a href="resumos.html">IA & Pesquisa</a></li>
+      </ul>
+    </nav>
+    <a href="../projeto/app.html" class="btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">My Money Control</a>
+  </header>
+
+  <!-- Seção: Arquitetura do Sistema -->
+  <section id="arquitetura-sistema" class="secao-clara fade-in">
+    <div class="container-arquitetura">
+      <h2 class="titulo-marinho">Como Funciona o <span>My Money Control</span></h2>
+      
+      <div class="fluxograma-grid">
+        <!-- Bloco 1: Entradas -->
+        <div class="fluxograma-card">
+          <div class="card-icon"><i class="fas fa-sign-in-alt"></i></div>
+          <h3>1. Entradas</h3>
+          <p>O que o usuário cadastra:</p>
+          <ul>
+            <li>Saldo inicial</li>
+            <li>Entradas</li>
+            <li>Saídas</li>
+            <li>Cartão de crédito</li>
+          </ul>
+          
+          <div class="accordion">
+            <button class="accordion-btn">Ver Categorias de Saídas <i class="fas fa-chevron-down"></i></button>
+            <div class="accordion-content">
+              <div class="categoria-grupo">
+                <strong>Gastos Fixos & Variáveis</strong>
+                <ul>
+                  <li>Alimentação</li>
+                  <li>Compras Essenciais</li>
+                  <li>Compras Não Essenciais</li>
+                  <li>Lazer</li>
+                  <li>Impostos</li>
+                  <li>Moradia</li>
+                  <li>Educação</li>
+                  <li>Pets</li>
+                  <li>Pessoal</li>
+                  <li>Saúde</li>
+                  <li>Transporte</li>
+                  <li>Presentes/Doações</li>
+                  <li>Assinaturas e Serviços</li>
+                  <li>Investimentos/Poupança</li>
+                  <li>Outros</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco 2: Processamento -->
+        <div class="fluxograma-card destaque-verde">
+          <div class="card-icon"><i class="fas fa-brain"></i></div>
+          <h3>2. Processamento (Motor IA)</h3>
+          <p>Ações automatizadas do sistema:</p>
+          <ul>
+            <li>Cálculo do saldo final</li>
+            <li>Categorização automática das saídas</li>
+            <li>Identificação de divergências (rendimentos não informados ou taxas automáticas)</li>
+          </ul>
+        </div>
+
+        <!-- Bloco 3: Saídas -->
+        <div class="fluxograma-card">
+          <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+          <h3>3. Saídas</h3>
+          <p>O que o sistema entrega ao usuário:</p>
+          <ul>
+            <li>Relatório financeiro automatizado</li>
+            <li>Análise do comportamento de consumo</li>
+            <li>Alertas de pontos de melhoria na gestão</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Diagrama Oficial -->
+      <div class="diagrama-container">
+        <h3 class="diagrama-titulo">Esquema Visual do Sistema</h3>
+        <img src="../fotos/diagrama-sistema.jpeg" alt="Diagrama de Arquitetura do Sistema SpendWise" class="diagrama-img">
+      </div>
+    </div>
+  </section>
+
+  <!-- Seção: Tabela de Controle de Gastos -->
+  <section id="tabela-controle" class="secao-clara fade-in" style="padding-top: 2rem;">
+    <div class="container-tabela">
+      <h2 class="titulo-marinho">Tabela de <span>Controle de Gastos</span></h2>
+      
+      <div class="tabela-responsiva">
+        <table class="tabela-spendwise">
+          <thead>
+            <tr>
+              <th>N°</th>
+              <th>Categoria</th>
+              <th>Tipo</th>
+              <th class="text-right">Valor (R$)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Alimentação</td>
+              <td>Variável</td>
+              <td class="text-right">250,00</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Moradia</td>
+              <td>Fixo</td>
+              <td class="text-right">1.500,00</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Assinaturas</td>
+              <td>Fixo</td>
+              <td class="text-right">45,90</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>Lazer</td>
+              <td>Variável</td>
+              <td class="text-right">120,00</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3" class="text-right total-label">Total</td>
+              <td class="text-right total-valor">R$ 1.915,90</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <script src="../script.js"></script>
+  <script>
+    // Script simples para o accordion
+    document.addEventListener("DOMContentLoaded", function() {
+      const acc = document.getElementsByClassName("accordion-btn");
+      for (let i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+          this.classList.toggle("active");
+          const icon = this.querySelector('i');
+          if (this.classList.contains('active')) {
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-up');
+          } else {
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+          }
+          const panel = this.nextElementSibling;
+          if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+          } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
