@@ -15,11 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Dicionário com informações financeiras individuais por mês
     mensal: {
-      'Janeiro': { saldoInicial: 4000.00, saldoFinalCadastrado: 6500.00 },
-      'Fevereiro': { saldoInicial: 6500.00, saldoFinalCadastrado: 9000.00 },
-      'Março': { saldoInicial: 6700.00, saldoFinalCadastrado: 6700.00 },
-      'Abril': { saldoInicial: 6700.00, saldoFinalCadastrado: 6700.00 },
-      'Maio': { saldoInicial: 8000.00, saldoFinalCadastrado: 22000.00 },
+      'Janeiro': { saldoInicial: 0.00, saldoFinalCadastrado: 0.00 },
+      'Fevereiro': { saldoInicial: 0.00, saldoFinalCadastrado: 0.00 },
+      'Março': { saldoInicial: 0.00, saldoFinalCadastrado: 0.00 },
+      'Abril': { saldoInicial: 0.00, saldoFinalCadastrado: 0.00 },
+      'Maio': { saldoInicial: 0.00, saldoFinalCadastrado: 0.00 },
       'Junho': { saldoInicial: 0.00, saldoFinalCadastrado: 0.00 },
       'Julho': { saldoInicial: 0.00, saldoFinalCadastrado: 0.00 },
       'Agosto': { saldoInicial: 0.00, saldoFinalCadastrado: 0.00 },
@@ -29,86 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
       'Dezembro': { saldoInicial: 0.00, saldoFinalCadastrado: 0.00 }
     },
     
-    // Array com lançamentos mockados iniciais de alta fidelidade
-    transacoes: [
-      // MOCK JANEIRO (Sincronizado / Sem anomalias)
-      {
-        id: 101,
-        mes: 'Janeiro',
-        tipo: 'Entrada',
-        descricao: 'Salário SpendWise',
-        valor: 3000.00,
-        data: '10 Jan'
-      },
-      {
-        id: 102,
-        mes: 'Janeiro',
-        tipo: 'Despesa',
-        descricao: 'Internet Fibra',
-        valor: 500.00,
-        data: '15 Jan'
-      },
-      
-      // MOCK FEVEREIRO (Divergente / Anomalia de R$ 2.300,00)
-      {
-        id: 201,
-        mes: 'Fevereiro',
-        tipo: 'Entrada',
-        descricao: 'Freelance Design',
-        valor: 2000.00,
-        data: '08 Fev'
-      },
-      {
-        id: 202,
-        mes: 'Fevereiro',
-        tipo: 'Despesa',
-        descricao: 'Aluguel Mensal',
-        valor: 1800.00,
-        data: '10 Fev'
-      },
-
-      // MOCK MAIO (Sincronizado / Alta Fidelidade)
-      {
-        id: 1,
-        mes: 'Maio',
-        tipo: 'Entrada',
-        descricao: 'Salário SpendWise',
-        valor: 15000.00,
-        data: 'Hoje'
-      },
-      {
-        id: 2,
-        mes: 'Maio',
-        tipo: 'Despesa',
-        descricao: 'Condomínio',
-        valor: 800.00,
-        data: 'Ontem'
-      },
-      {
-        id: 3,
-        mes: 'Maio',
-        tipo: 'Despesa do cartão de crédito',
-        descricao: 'Supermercado',
-        valor: 2000.00,
-        data: '21 Mai'
-      },
-      {
-        id: 4,
-        mes: 'Maio',
-        tipo: 'Entrada',
-        descricao: 'Freelance Renda Extra',
-        valor: 2000.00,
-        data: '20 Mai'
-      },
-      {
-        id: 5,
-        mes: 'Maio',
-        tipo: 'Despesa do cartão de crédito',
-        descricao: 'Restaurante',
-        valor: 200.00,
-        data: '18 Mai'
-      }
-    ]
+    // Array com lançamentos vazios (Estado Zerado)
+    transacoes: []
   };
 
   // --------------------------------------------------------------------------
@@ -180,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
       tabPlanilhas.classList.remove('active');
       navDashboard.classList.add('active');
       navPlanilhas.classList.remove('active');
-      pageTitle.innerText = 'Página Inicial';
+      pageTitle.innerText = 'Inserir Informações';
       
       // Quando volta ao dashboard, recalcula para o mês ativo
       recalculateAll();
@@ -189,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
       tabPlanilhas.classList.add('active');
       navDashboard.classList.remove('active');
       navPlanilhas.classList.add('active');
-      pageTitle.innerText = 'Minhas Planilhas';
+      pageTitle.innerText = 'Minhas Informações';
       
       // Sempre que abrir abas de planilhas, garante exibição limpa do Grid
       closeMonthPlan();
@@ -342,22 +264,53 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 9. Renderizar as tabelas dinâmicas
-    renderDynamicLists(selectedMonth, transacoesMes);
+    renderRecentTransactions();
+    renderSheetTransactions(selectedMonth, transacoesMes);
     
     // 10. Atualizar os crachás de status no grid de 12 meses
     updateMonthBadges();
   };
 
   // --------------------------------------------------------------------------
+  // LÓGICA DE EXCLUSÃO DE LANÇAMENTOS
+  // --------------------------------------------------------------------------
+  window.removeTransaction = (id) => {
+    const t = appState.transacoes.find(tx => tx.id === id);
+    if (!t) return;
+    
+    // Se for definição de saldo, zera o valor no controle mensal respectivo
+    if (t.tipo === 'Saldo inicial') {
+      if (appState.mensal[t.mes]) appState.mensal[t.mes].saldoInicial = 0;
+    } else if (t.tipo === 'Saldo final') {
+      if (appState.mensal[t.mes]) appState.mensal[t.mes].saldoFinalCadastrado = 0;
+    }
+    
+    // Remove do array
+    appState.transacoes = appState.transacoes.filter(tx => tx.id !== id);
+    
+    // Recalcula tudo
+    recalculateAll();
+  };
+
+  // --------------------------------------------------------------------------
   // RENDERIZAÇÃO DINÂMICA DE TABELAS & EXTRATOS
   // --------------------------------------------------------------------------
-  const renderDynamicLists = (selectedMonth, transacoesMes) => {
-    // A) Renderiza Extrato Recente (Página Inicial) - Geral/Global (últimas 6)
+  window.renderRecentTransactions = () => {
+    const filtroDropdown = document.getElementById('filtro-mes-extrato');
+    const filtro = filtroDropdown ? filtroDropdown.value : 'Todos';
     recentTransactionsList.innerHTML = '';
     
-    appState.transacoes.slice(0, 6).forEach(t => {
+    let tList = appState.transacoes;
+    if (filtro !== 'Todos') {
+      tList = tList.filter(t => t.mes === filtro);
+    }
+    
+    tList.slice(0, 20).forEach(t => {
       const visual = getTransactionVisuals(t.tipo);
       const li = document.createElement('li');
+      li.style.display = 'flex';
+      li.style.justifyContent = 'space-between';
+      li.style.alignItems = 'center';
       
       let amountClass = 'saldo-reg';
       let signal = '';
@@ -380,20 +333,28 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="trans-meta">${t.mes} • ${t.tipo} • ${t.data}</span>
           </div>
         </div>
-        <div class="trans-amount ${amountClass}">
-          ${signal}${formatCurrency(t.valor)}
+        <div style="display: flex; align-items: center; gap: 15px;">
+          <div class="trans-amount ${amountClass}">
+            ${signal}${formatCurrency(t.valor)}
+          </div>
+          <button class="btn-remove-trans" onclick="removeTransaction(${t.id})" style="background: none; border: none; color: #E53935; cursor: pointer; font-size: 1.1rem;" title="Remover transação">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
         </div>
       `;
       recentTransactionsList.appendChild(li);
     });
 
-    if (appState.transacoes.length === 0) {
+    if (tList.length === 0) {
       recentTransactionsList.innerHTML = `
         <li style="justify-content: center; color: var(--color-text-muted); font-size: 0.9rem; padding: 2rem 0;">
-          Nenhuma transação registrada ainda. Use o formulário ao lado.
+          Nenhuma transação encontrada.
         </li>
       `;
     }
+  };
+
+  const renderSheetTransactions = (selectedMonth, transacoesMes) => {
 
     // B) Renderiza Entradas na Planilha (Filtrado pelo mês ativo)
     sheetEntradasList.innerHTML = '';
@@ -521,8 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
     form.reset();
     toggleDescriptionField();
 
-    // 5. Feedback visual de sucesso
-    alert(`Lançamento de "${tipoValue}" para ${mesValue} registrado com sucesso!`);
+    // 5. Feedback visual de sucesso (Removido o alert travado)
   };
 
   // --------------------------------------------------------------------------

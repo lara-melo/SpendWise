@@ -1,45 +1,51 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Money Control</title>
-  
+
   <!-- Estilos Globais do App -->
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="../imagens/logos/logo5.png" type="image/x-icon">
-  
+
   <!-- Fontes de Alta Legibilidade (Inter) e Ícones (FontAwesome) -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
 
   <div class="app-container">
     <!-- Sidebar Lateral de Navegação Principal -->
     <aside class="sidebar">
-      <div class="logo" style="display: flex; align-items: center; gap: 10px;">
-        <img src="../imagens/logos/logo5.png" alt="SpendWise Logo" style="height: 40px; width: auto;">
-        <h2>Spend<span>Wise</span></h2>
+      <div class="logo-container">
+        <div class="logo">
+          <img src="../imagens/logos/logo5.png" alt="SpendWise Logo" style="height: 40px; width: auto;">
+          <h2>Spend<span>Wise</span></h2>
+        </div>
+        <span class="system-badge">My Money Control</span>
       </div>
-      
+
       <nav>
         <ul>
           <!-- Item Página Inicial (Dashboard) -->
           <li class="active" id="nav-dashboard">
             <a href="#" onclick="switchTab('dashboard')">
-              <i class="fa-solid fa-chart-pie"></i> Página Inicial
+              <i class="fa-solid fa-plus-circle"></i> Inserir Informações
             </a>
           </li>
           <!-- Item Minhas Planilhas (Visão de Relatório) -->
           <li id="nav-planilhas">
             <a href="#" onclick="switchTab('planilhas')">
-              <i class="fa-solid fa-table"></i> Minhas Planilhas
+              <i class="fa-solid fa-table"></i> Minhas Informações
             </a>
           </li>
         </ul>
       </nav>
-      
+
       <!-- Botão de Saída / Portal Corporativo -->
       <div class="sidebar-bottom">
         <a href="../index.html" class="btn-secondary">
@@ -50,51 +56,49 @@
 
     <!-- Conteúdo Principal Dinâmico (SPA) -->
     <main class="main-content">
-      
+
       <!-- Topbar Principal com Identidade do Usuário -->
       <header class="top-nav">
         <div>
-          <h1 id="page-title">Página Inicial</h1>
+          <h1 id="page-title">Inserir Informações</h1>
         </div>
         <div class="user-profile">
           <span>Olá, <strong>Usuário</strong></span>
-          <div class="avatar">I</div>
+          <div class="avatar">U</div>
         </div>
       </header>
-
-      <!-- Cards de Resumo Geral (Overview de Desempenho) -->
-      <section class="overview">
-        <div class="stat-card card-saldo-inicial">
-          <h3><i class="fa-solid fa-wallet"></i> Saldo Inicial</h3>
-          <p class="value" id="overview-saldo-inicial">R$ 0,00</p>
-        </div>
-        <div class="stat-card card-entradas">
-          <h3><i class="fa-solid fa-arrow-trend-up"></i> Entradas</h3>
-          <p class="value positive" id="overview-entradas">+ R$ 0,00</p>
-        </div>
-        <div class="stat-card card-saidas">
-          <h3><i class="fa-solid fa-arrow-trend-down"></i> Saídas</h3>
-          <p class="value negative" id="overview-saidas">- R$ 0,00</p>
-        </div>
-        <div class="stat-card card-ia highlight-card">
-          <h3><i class="fa-solid fa-robot"></i> Motor IA SpendWise</h3>
-          <p class="ai-text" id="overview-ai-tip">Buscando divergências... Adicione saldo inicial e final para calibrar o sensor da IA.</p>
-        </div>
-      </section>
 
       <!-- ==========================================================================
            TELA 1: PÁGINA INICIAL (DASHBOARD DE ENTRADA)
            ========================================================================== -->
       <div id="tab-dashboard" class="tab-content active">
         <div class="dashboard-grid">
-          
+
           <!-- Seção de Extrato Recente -->
           <div class="panel">
             <div class="panel-header">
-              <h3><i class="fa-solid fa-list-ul"></i> Extrato Recente</h3>
-              <span style="font-size: 0.85rem; color: var(--color-text-muted);">Simulação de lançamentos</span>
+              <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <h3><i class="fa-solid fa-list-ul"></i> Extrato Recente</h3>
+                <!-- Seletor de mês para filtrar o extrato -->
+                <select id="filtro-mes-extrato" onchange="renderRecentTransactions()"
+                  style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; font-family: var(--font-main);">
+                  <option value="Todos">Todos os Meses</option>
+                  <option value="Janeiro">Janeiro</option>
+                  <option value="Fevereiro">Fevereiro</option>
+                  <option value="Março">Março</option>
+                  <option value="Abril">Abril</option>
+                  <option value="Maio">Maio</option>
+                  <option value="Junho">Junho</option>
+                  <option value="Julho">Julho</option>
+                  <option value="Agosto">Agosto</option>
+                  <option value="Setembro">Setembro</option>
+                  <option value="Outubro">Outubro</option>
+                  <option value="Novembro">Novembro</option>
+                  <option value="Dezembro">Dezembro</option>
+                </select>
+              </div>
             </div>
-            
+
             <ul class="transaction-list" id="recentTransactionsList">
               <!-- Renderizado dinamicamente via script.js -->
             </ul>
@@ -105,7 +109,7 @@
             <div class="panel-header">
               <h3><i class="fa-solid fa-plus-circle"></i> Adicionar Nova Informação</h3>
             </div>
-            
+
             <form id="transactionForm" onsubmit="handleFormSubmit(event)">
               <!-- Mês Dropdown -->
               <div class="form-group">
@@ -158,22 +162,23 @@
               </button>
             </form>
           </div>
-          
+
         </div>
       </div>
 
       <!-- ==========================================================================
-           TELA 2: MINHAS PLANILHAS (VISÃO DE RELATÓRIO)
+           TELA 2: MINHAS INFORMAÇÕES (VISÃO DE RELATÓRIO)
            ========================================================================== -->
       <div id="tab-planilhas" class="tab-content">
-        
+
         <!-- VISÃO DE SELEÇÃO: Grid de 12 Meses -->
         <div id="months-grid-container" class="fade-transition">
           <div class="panel-header" style="margin-bottom: 2rem;">
-            <h3><i class="fa-solid fa-calendar-days"></i> Minhas Planilhas</h3>
-            <span style="font-size: 0.85rem; color: var(--color-text-muted);">Selecione um mês para visualizar o relatório detalhado do período</span>
+            <h3><i class="fa-solid fa-calendar-days"></i> Minhas Informações</h3>
+            <span style="font-size: 0.85rem; color: var(--color-text-muted);">Selecione um mês para visualizar o
+              relatório detalhado do período</span>
           </div>
-          
+
           <div class="months-grid">
             <!-- Cards dos 12 meses do ano -->
             <div class="month-card" onclick="openMonthPlan('Janeiro')">
@@ -241,7 +246,7 @@
 
         <!-- VISÃO DE PLANILHA: Detalhamento Mensal -->
         <div id="monthly-sheet-details" class="planilha-container fade-transition hidden-view">
-          
+
           <!-- Botão Voltar para os Meses -->
           <div>
             <button class="btn-back-months" onclick="closeMonthPlan()">
@@ -249,27 +254,52 @@
             </button>
           </div>
 
+          <!-- Cards de Resumo Geral (Agora dentro do mês específico) -->
+          <section class="overview" style="margin-top: 2rem; margin-bottom: 2rem;">
+            <div class="stat-card card-saldo-inicial">
+              <h3><i class="fa-solid fa-wallet"></i> Saldo Inicial</h3>
+              <p class="value" id="overview-saldo-inicial">R$ 0,00</p>
+            </div>
+            <div class="stat-card card-entradas">
+              <h3><i class="fa-solid fa-arrow-trend-up"></i> Entradas</h3>
+              <p class="value positive" id="overview-entradas">+ R$ 0,00</p>
+            </div>
+            <div class="stat-card card-saidas">
+              <h3><i class="fa-solid fa-arrow-trend-down"></i> Saídas</h3>
+              <p class="value negative" id="overview-saidas">- R$ 0,00</p>
+            </div>
+            <div class="stat-card card-ia highlight-card">
+              <h3><i class="fa-solid fa-robot"></i> Motor IA SpendWise</h3>
+              <p class="ai-text" id="overview-ai-tip">Buscando divergências... Adicione saldo inicial e final para
+                calibrar o sensor da IA.</p>
+            </div>
+          </section>
+
           <!-- Seção de Saldo Inicial -->
           <div class="planilha-section" style="padding: 1.25rem 2.2rem;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-weight: 700; color: var(--color-navy-deep); font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-vault" style="color: var(--color-navy-deep);"></i> Saldo Inicial (<span id="sheet-selected-month-label">Maio</span>)
+              <span
+                style="font-weight: 700; color: var(--color-navy-deep); font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-vault" style="color: var(--color-navy-deep);"></i> Saldo Inicial (<span
+                  id="sheet-selected-month-label">Maio</span>)
               </span>
-              <span id="sheet-saldo-inicial" style="font-weight: 800; font-size: 1.15rem; color: var(--color-navy-deep);">R$ 0,00</span>
+              <span id="sheet-saldo-inicial"
+                style="font-weight: 800; font-size: 1.15rem; color: var(--color-navy-deep);">R$ 0,00</span>
             </div>
           </div>
 
           <!-- Seção de Entradas -->
           <div class="planilha-section">
             <div class="planilha-header">
-              <h4><i class="fa-solid fa-circle-arrow-up" style="color: var(--color-green);"></i> Entradas em <span id="sheet-selected-month-entradas">Maio</span></h4>
+              <h4><i class="fa-solid fa-circle-arrow-up" style="color: var(--color-green);"></i> Entradas em <span
+                  id="sheet-selected-month-entradas">Maio</span></h4>
               <span class="header-col-label">Valor (R$)</span>
             </div>
-            
+
             <div id="sheet-entradas-list">
               <!-- Gerado via script.js -->
             </div>
-            
+
             <div class="planilha-total">
               <span class="total-label">Total de Entradas</span>
               <span class="total-val positive" id="sheet-total-entradas">R$ 0,00</span>
@@ -279,14 +309,15 @@
           <!-- Seção de Saídas Detalhadas -->
           <div class="planilha-section">
             <div class="planilha-header">
-              <h4><i class="fa-solid fa-circle-arrow-down" style="color: var(--color-red);"></i> Saídas em <span id="sheet-selected-month-saidas">Maio</span></h4>
+              <h4><i class="fa-solid fa-circle-arrow-down" style="color: var(--color-red);"></i> Saídas em <span
+                  id="sheet-selected-month-saidas">Maio</span></h4>
               <span class="header-col-label">Valor (R$)</span>
             </div>
-            
+
             <div id="sheet-saidas-list">
               <!-- Gerado via script.js -->
             </div>
-            
+
             <div class="planilha-total">
               <span class="total-label">Total de Saídas</span>
               <span class="total-val negative" id="sheet-total-saidas">R$ 0,00</span>
@@ -296,18 +327,20 @@
           <!-- Seção de Fechamento & Comparação IA (CRÍTICO) -->
           <div class="planilha-section comparacao-panel">
             <div class="comparacao-header">
-              <i class="fa-solid fa-brain"></i> Análise de Fechamento e Saldos (<span id="sheet-selected-month-comparacao">Maio</span>)
+              <i class="fa-solid fa-brain"></i> Análise de Fechamento e Saldos (<span
+                id="sheet-selected-month-comparacao">Maio</span>)
             </div>
-            
+
             <div class="comparacao-grid">
               <!-- Card: Saldo Final Calculado pelo Sistema -->
               <div class="comparacao-card calculado" style="border: 2px solid var(--color-green);">
                 <div class="card-icon"><i class="fa-solid fa-gears" style="color: var(--color-green);"></i></div>
                 <div class="card-title">Saldo Final Calculado (Sistema)</div>
-                <div class="card-val" id="comparison-calculated" style="color: var(--color-green) !important;">R$ 0,00</div>
+                <div class="card-val" id="comparison-calculated" style="color: var(--color-green) !important;">R$ 0,00
+                </div>
                 <div class="card-subtitle">(Saldo Inicial + Entradas - Saídas)</div>
               </div>
-              
+
               <!-- Card: Saldo Final Informado pelo Usuário -->
               <div class="comparacao-card cadastrado">
                 <div class="card-icon"><i class="fa-solid fa-user-pen"></i></div>
@@ -315,7 +348,7 @@
                 <div class="card-val" id="comparison-registered">R$ 0,00</div>
                 <div class="card-subtitle">(Informado manualmente)</div>
               </div>
-              
+
               <!-- Banners Informativos de Comparação via IA -->
               <!-- 1. Banner de Divergência/Alerta -->
               <div class="alerta-divergencia-box" id="ia-divergencia-alert">
@@ -325,7 +358,10 @@
                     Anomalia Detectada pelo Motor IA <span>Aviso Crítico</span>
                   </div>
                   <div class="alerta-divergencia-desc">
-                    Identificamos uma discrepância de <span id="ia-divergencia-val">R$ 0,00</span> entre os seus lançamentos reais e o saldo final que você reportou para o mês de <strong id="ia-divergencia-mes">Maio</strong>. Isso pode indicar tarifas bancárias ocultas, rendimentos esquecidos ou erro de digitação. Por favor, revise as transações.
+                    Identificamos uma discrepância de <span id="ia-divergencia-val">R$ 0,00</span> entre os seus
+                    lançamentos reais e o saldo final que você reportou para o mês de <strong
+                      id="ia-divergencia-mes">Maio</strong>. Isso pode indicar tarifas bancárias ocultas, rendimentos
+                    esquecidos ou erro de digitação. Por favor, revise as transações.
                   </div>
                 </div>
               </div>
@@ -335,10 +371,12 @@
                 <i class="fa-solid fa-circle-check"></i>
                 <div>
                   <div class="sucesso-fechamento-title">Saldos perfeitamente sincronizados!</div>
-                  <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 3px;">Seu saldo final informado bate com a somatória das suas movimentações financeiras de <strong id="ia-sucesso-mes">Maio</strong>. O motor analítico da SpendWise não detectou anomalias.</p>
+                  <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 3px;">Seu saldo final
+                    informado bate com a somatória das suas movimentações financeiras de <strong
+                      id="ia-sucesso-mes">Maio</strong>. O motor analítico da SpendWise não detectou anomalias.</p>
                 </div>
               </div>
-              
+
             </div>
           </div>
 
@@ -351,4 +389,5 @@
   <!-- Scripts Lógicos do Portal -->
   <script src="script.js"></script>
 </body>
+
 </html>

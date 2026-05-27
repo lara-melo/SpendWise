@@ -23,8 +23,8 @@ html {
 
 body {
   font-family: var(--font-main);
-  background-color: var(--color-navy);
-  color: var(--color-white);
+  background-color: #FFFFFF;
+  color: #0B1B2B;
   line-height: 1.6;
   overflow-x: hidden;
 }
@@ -111,7 +111,7 @@ section {
   font-weight: 800;
   margin-bottom: 2rem;
   text-align: center;
-  color: var(--color-white);
+  color: #0B1B2B;
 }
 
 .section-title span {
@@ -138,7 +138,7 @@ section {
 
 #home p {
   font-size: 1.25rem;
-  color: var(--color-gray);
+  color: #0B1B2B;
   max-width: 600px;
   margin-bottom: 2rem;
 }
@@ -151,10 +151,11 @@ section {
 }
 
 .feature-box {
-  background: rgba(255, 255, 255, 0.05);
+  background: #F8F9FA;
   padding: 1.5rem;
   border-radius: 8px;
   border-left: 4px solid var(--color-green);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
 }
 
 .feature-box h3 {
@@ -171,7 +172,7 @@ section {
    ========================================================================== */
 .timeline-container {
   position: relative;
-  max-width: 1000px;
+  max-width: 1200px; /* Aumentado de 1000px para 1200px para dar mais respiro aos quadros */
   margin: 4rem auto 0;
   padding: 0 20px;
 }
@@ -418,39 +419,49 @@ section {
 }
 
 .resumo-item {
-  background: #112240;
+  background: #F8F9FA;
   padding: 2rem;
   border-radius: 8px;
   border-left: 2px solid var(--color-green);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease; /* Transição suave adicionada */
+}
+
+/* Novo estado hover com salto elegante */
+.resumo-item:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
 }
 
 .resumo-item h3 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
+  color: #0B1B2B;
 }
 
 .resumo-item p {
-  color: var(--color-gray);
+  color: #0B1B2B;
 }
 
 /* Sistema (Ponte) Section */
 #sistema {
   text-align: center;
   align-items: center;
-  background: linear-gradient(180deg, var(--color-navy) 0%, #051024 100%);
+  background-color: #FFFFFF;
 }
 
 #sistema .cta-container {
-  background: rgba(0, 230, 118, 0.05);
+  background: #F8F9FA;
   border: 1px solid rgba(0, 230, 118, 0.2);
   padding: 4rem 2rem;
   border-radius: 16px;
   max-width: 800px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
 }
 
 #sistema p {
   font-size: 1.25rem;
-  color: var(--color-gray);
+  color: #0B1B2B;
   margin-bottom: 2.5rem;
   max-width: 600px;
   margin-left: auto;
