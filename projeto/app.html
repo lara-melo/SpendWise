@@ -14,6 +14,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Chart.js para os gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -33,19 +36,19 @@
         <ul>
           <!-- Item Página Inicial (Dashboard) -->
           <li class="active" id="nav-dashboard">
-            <a href="#" onclick="switchTab('dashboard')">
+            <a href="#" class="tab-link" data-tab="dashboard">
               <i class="fa-solid fa-plus-circle"></i> Inserir Informações
             </a>
           </li>
           <!-- Item Minhas Planilhas (Visão de Relatório) -->
           <li id="nav-planilhas">
-            <a href="#" onclick="switchTab('planilhas')">
+            <a href="#" class="tab-link" data-tab="planilhas">
               <i class="fa-solid fa-table"></i> Minhas Informações
             </a>
           </li>
           <!-- Item Meus Relatórios -->
           <li id="nav-relatorios">
-            <a href="#" onclick="switchTab('relatorios')">
+            <a href="#" class="tab-link" data-tab="relatorios">
               <i class="fa-solid fa-table"></i> Meus Relatórios
             </a>
           </li>
@@ -54,8 +57,8 @@
 
       <!-- Botão de Saída / Portal Corporativo -->
       <div class="sidebar-bottom">
-        <a href="../index.html" class="btn-secondary">
-          <i class="fa-solid fa-arrow-left"></i> Voltar ao Início
+        <a href="#" id="btn-logout" class="btn-secondary">
+          <i class="fa-solid fa-arrow-left"></i> Sair do Sistema
         </a>
       </div>
     </aside>
@@ -86,7 +89,7 @@
               <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                 <h3><i class="fa-solid fa-list-ul"></i> Extrato Recente</h3>
                 <!-- Seletor de mês para filtrar o extrato -->
-                <select id="filtro-mes-extrato" onchange="renderRecentTransactions()"
+                <select id="filtro-mes-extrato"
                   style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; font-family: var(--font-main);">
                   <option value="Todos">Todos os Meses</option>
                   <option value="Janeiro">Janeiro</option>
@@ -115,8 +118,10 @@
             <div class="panel-header">
               <h3><i class="fa-solid fa-plus-circle"></i> Adicionar Nova Informação</h3>
             </div>
+            
+            <div id="app-msg-container" style="margin: 0 20px 15px 20px; font-size: 0.9rem; font-weight: 500; padding: 10px; border-radius: 6px; display: none;"></div>
 
-            <form id="transactionForm" onsubmit="handleFormSubmit(event)">
+            <form id="transactionForm">
               <!-- Mês Dropdown -->
               <div class="form-group">
                 <label for="mes">Mês de Referência</label>
@@ -140,7 +145,7 @@
               <!-- Tipo de Informação Dropdown -->
               <div class="form-group">
                 <label for="informacao">Informação</label>
-                <select id="informacao" onchange="toggleDescriptionField()" required>
+                <select id="informacao" required>
                   <option value="" disabled selected>Escolha o tipo...</option>
                   <option value="Despesa">Despesa</option>
                   <option value="Despesa do cartão de crédito">Despesa do cartão de crédito</option>
@@ -159,7 +164,7 @@
               <!-- Valor Numeric Input -->
               <div class="form-group">
                 <label for="valor">Valor (R$)</label>
-                <input type="number" step="0.01" min="0.01" id="valor" placeholder="0,00" required>
+                <input type="text" id="valor" placeholder="R$ 0,00" required>
               </div>
 
               <!-- Botão de submissão verde corporativo -->
@@ -187,62 +192,62 @@
 
           <div class="months-grid">
             <!-- Cards dos 12 meses do ano -->
-            <div class="month-card" onclick="openMonthPlan('Janeiro')">
+            <div class="month-card" data-month="Janeiro">
               <i class="fa-solid fa-calendar-day"></i>
               <span class="month-name">Janeiro</span>
               <span class="month-status" id="status-Janeiro">Pendente</span>
             </div>
-            <div class="month-card" onclick="openMonthPlan('Fevereiro')">
+            <div class="month-card" data-month="Fevereiro">
               <i class="fa-solid fa-calendar-day"></i>
               <span class="month-name">Fevereiro</span>
               <span class="month-status" id="status-Fevereiro">Pendente</span>
             </div>
-            <div class="month-card" onclick="openMonthPlan('Março')">
+            <div class="month-card" data-month="Março">
               <i class="fa-solid fa-calendar-day"></i>
               <span class="month-name">Março</span>
               <span class="month-status" id="status-Março">Pendente</span>
             </div>
-            <div class="month-card" onclick="openMonthPlan('Abril')">
+            <div class="month-card" data-month="Abril">
               <i class="fa-solid fa-calendar-day"></i>
               <span class="month-name">Abril</span>
               <span class="month-status" id="status-Abril">Pendente</span>
             </div>
-            <div class="month-card" onclick="openMonthPlan('Maio')">
+            <div class="month-card" data-month="Maio">
               <i class="fa-solid fa-calendar-day"></i>
               <span class="month-name">Maio</span>
               <span class="month-status" id="status-Maio">Ativo</span>
             </div>
-            <div class="month-card" onclick="openMonthPlan('Junho')">
+            <div class="month-card" data-month="Junho">
               <i class="fa-solid fa-calendar-day"></i>
               <span class="month-name">Junho</span>
               <span class="month-status" id="status-Junho">Pendente</span>
             </div>
-            <div class="month-card" onclick="openMonthPlan('Julho')">
+            <div class="month-card" data-month="Julho">
               <i class="fa-solid fa-calendar-day"></i>
               <span class="month-name">Julho</span>
               <span class="month-status" id="status-Julho">Pendente</span>
             </div>
-            <div class="month-card" onclick="openMonthPlan('Agosto')">
+            <div class="month-card" data-month="Agosto">
               <i class="fa-solid fa-calendar-day"></i>
               <span class="month-name">Agosto</span>
               <span class="month-status" id="status-Agosto">Pendente</span>
             </div>
-            <div class="month-card" onclick="openMonthPlan('Setembro')">
+            <div class="month-card" data-month="Setembro">
               <i class="fa-solid fa-calendar-day"></i>
               <span class="month-name">Setembro</span>
               <span class="month-status" id="status-Setembro">Pendente</span>
             </div>
-            <div class="month-card" onclick="openMonthPlan('Outubro')">
+            <div class="month-card" data-month="Outubro">
               <i class="fa-solid fa-calendar-day"></i>
               <span class="month-name">Outubro</span>
               <span class="month-status" id="status-Outubro">Pendente</span>
             </div>
-            <div class="month-card" onclick="openMonthPlan('Novembro')">
+            <div class="month-card" data-month="Novembro">
               <i class="fa-solid fa-calendar-day"></i>
               <span class="month-name">Novembro</span>
               <span class="month-status" id="status-Novembro">Pendente</span>
             </div>
-            <div class="month-card" onclick="openMonthPlan('Dezembro')">
+            <div class="month-card" data-month="Dezembro">
               <i class="fa-solid fa-calendar-day"></i>
               <span class="month-name">Dezembro</span>
               <span class="month-status" id="status-Dezembro">Pendente</span>
@@ -255,7 +260,7 @@
 
           <!-- Botão Voltar para os Meses -->
           <div>
-            <button class="btn-back-months" onclick="closeMonthPlan()">
+            <button class="btn-back-months" id="btn-close-month">
               <i class="fa-solid fa-arrow-left"></i> Voltar para os Meses
             </button>
           </div>
@@ -339,8 +344,8 @@
 
             <div class="comparacao-grid">
               <!-- Card: Saldo Final Calculado pelo Sistema -->
-              <div class="comparacao-card calculado" style="border: 2px solid var(--color-green);">
-                <div class="card-icon"><i class="fa-solid fa-gears" style="color: var(--color-green);"></i></div>
+              <div class="comparacao-card calculado" id="card-calculado" style="border: 2px solid var(--color-green); transition: background-color 0.3s;">
+                <div class="card-icon"><i class="fa-solid fa-gears" id="icon-calculado" style="color: var(--color-green);"></i></div>
                 <div class="card-title">Saldo Final Calculado (Sistema)</div>
                 <div class="card-val" id="comparison-calculated" style="color: var(--color-green) !important;">R$ 0,00
                 </div>
@@ -389,11 +394,47 @@
         </div>
       </div>
 
+      <!-- ==========================================================================
+           TELA 3: MEUS RELATÓRIOS
+           ========================================================================== -->
+      <div id="tab-relatorios" class="tab-content">
+        <div class="panel-header" style="margin-bottom: 2rem;">
+          <h3><i class="fa-solid fa-chart-pie"></i> Meus Relatórios</h3>
+          <span style="font-size: 0.85rem; color: var(--color-text-muted);">Visão geral financeira e Mentor IA</span>
+        </div>
+
+        <!-- Destaque do Mentor IA -->
+        <div id="insightIA" style="background-color: #0B1B2B; color: #FFFFFF; border-radius: 12px; padding: 20px; margin-bottom: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-size: 16px; line-height: 1.5;">
+            <p>Carregando conselho do Mentor...</p>
+        </div>
+
+        <!-- Grid dos Gráficos -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+            <!-- Gráfico 1: Categorias -->
+            <div style="background-color: #FFFFFF; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(11, 27, 43, 0.1);">
+                <h3 style="color: #0B1B2B; text-align: center; margin-bottom: 16px;">Despesas por Categoria</h3>
+                <canvas id="graficoCategorias"></canvas>
+            </div>
+            
+            <!-- Gráfico 2: Entradas vs Saídas -->
+            <div style="background-color: #FFFFFF; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(11, 27, 43, 0.1);">
+                <h3 style="color: #0B1B2B; text-align: center; margin-bottom: 16px;">Saldo (Mês Atual)</h3>
+                <canvas id="graficoSaldo"></canvas>
+            </div>
+            
+            <!-- Gráfico 3: Histórico -->
+            <div style="background-color: #FFFFFF; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(11, 27, 43, 0.1);">
+                <h3 style="color: #0B1B2B; text-align: center; margin-bottom: 16px;">Evolução Histórica</h3>
+                <canvas id="graficoHistorico"></canvas>
+            </div>
+        </div>
+      </div>
+
     </main>
   </div>
 
   <!-- Scripts Lógicos do Portal -->
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 
 </html>
