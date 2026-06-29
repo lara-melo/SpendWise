@@ -9,8 +9,6 @@ import { supabase } from './supabaseClient.js';
 import { checkAuth, logout } from './auth.js';
 import { ENV } from './config.js';
 
-const GEMINI_API_KEY = ENV.GEMINI_API_KEY;
-
 const escapeHTML = (str) => {
   if (!str) return '';
   return str.replace(/[&<>'"]/g, 
@@ -43,7 +41,9 @@ let appState = {
     'Novembro': { saldoInicial: 0.00, saldoFinalCadastrado: 0.00 },
     'Dezembro': { saldoInicial: 0.00, saldoFinalCadastrado: 0.00 }
   },
-  transacoes: []
+  transacoes: [],
+  personality: null,
+  chatHistory: []
 };
 
 // --------------------------------------------------------------------------
@@ -161,6 +161,16 @@ const openMonthPlan = (monthName) => {
   gridContainer.classList.add('hidden-view');
   sheetDetails.classList.remove('hidden-view');
   recalculateAll();
+
+  // Iniciar o chat automaticamente ao abrir o mês
+  appState.chatHistory = [];
+  const chatPanel = document.getElementById('mentor-chat-panel');
+  if (chatPanel) chatPanel.style.display = 'flex';
+  
+  const chatHistoryDiv = document.getElementById('chat-history');
+  if (chatHistoryDiv) chatHistoryDiv.innerHTML = '';
+  // Envia mensagem sem texto para triggar a Análise Inicial do Mentor
+  setTimeout(() => sendChatMessage(), 500);
 };
 
 const closeMonthPlan = () => {
@@ -224,18 +234,7 @@ async function askGeminiCategory(descricao, valor) {
   }
 }
 
-async function askGeminiInsight(jsonResumo) {
-  try {
-    const { data, error } = await supabase.functions.invoke('gemini', {
-      body: { action: 'insight', payload: { jsonResumo } }
-    });
-    if (error) throw error;
-    return data.result.candidates[0].content.parts[0].text.trim();
-  } catch (error) {
-    console.error("Erro ao gerar insight com Gemini:", error);
-    return "Não foi possível gerar um insight no momento.";
-  }
-}
+
 
 // --------------------------------------------------------------------------
 // INTEGRAÇÃO SUPABASE - CRUD
@@ -698,6 +697,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   const userProfileName = document.querySelector('.user-profile span strong');
   if (userProfileName) userProfileName.innerText = currentUser.email.split('@')[0];
 
+  // Lógica de Personalidade da IA
+  const aiPersonalityModal = document.getElementById('ai-personality-modal');
+  const btnSavePersonality = document.getElementById('btn-save-personality');
+  
+  if (!appState.personality) {
+    const savedPersonality = localStorage.getItem(`spendwise_ai_personality_${currentUser.id}`);
+    if (savedPersonality) {
+      appState.personality = savedPersonality;
+    } else {
+      if (aiPersonalityModal) aiPersonalityModal.style.display = 'flex';
+    }
+  }
+
+  if (btnSavePersonality) {
+    btnSavePersonality.addEventListener('click', () => {
+      const selected = document.querySelector('input[name="ai_personality"]:checked');
+      if (selected) {
+        appState.personality = selected.value;
+        localStorage.setItem(`spendwise_ai_personality_${currentUser.id}`, selected.value);
+        if (aiPersonalityModal) aiPersonalityModal.style.display = 'none';
+        showAppMessage(`Mentor configurado: ${selected.value}`);
+      }
+    });
+  }
+
   toggleDescriptionField();
   
   await loadTransactionsFromSupabase();
@@ -749,7 +773,99 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  const btnSendChat = document.getElementById('btn-send-chat');
+  const chatInput = document.getElementById('chat-input');
+  
+  if (btnSendChat && chatInput) {
+    const sendMessage = () => {
+      const text = chatInput.value.trim();
+      if (text) {
+        chatInput.value = '';
+        sendChatMessage(text);
+      }
+    };
+    btnSendChat.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+  }
+
   document.body.style.opacity = '0';
   document.body.style.transition = 'opacity 0.4s ease';
   setTimeout(() => { document.body.style.opacity = '1'; }, 50);
 });
+
+// --------------------------------------------------------------------------
+// LÓGICA DO CHAT INTERATIVO DO MENTOR
+// --------------------------------------------------------------------------
+async function sendChatMessage(message = null) {
+  const chatHistoryDiv = document.getElementById('chat-history');
+  if (!chatHistoryDiv) return;
+
+  const isInitialMessage = !message;
+  
+  if (message) {
+    const userBubble = document.createElement('div');
+    userBubble.className = 'chat-bubble user';
+    userBubble.innerText = message;
+    chatHistoryDiv.appendChild(userBubble);
+    chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
+  }
+
+  const aiBubble = document.createElement('div');
+  aiBubble.className = 'chat-bubble ai';
+  aiBubble.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Digitando...';
+  chatHistoryDiv.appendChild(aiBubble);
+  chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
+
+  try {
+    const selectedMonth = appState.selectedMonth || 'Maio';
+    const transacoesMes = appState.transacoes.filter(t => t.mes === selectedMonth);
+    const totalEntradas = transacoesMes.filter(t => t.tipo === 'Entrada').reduce((sum, t) => sum + t.valor, 0);
+    const totalSaidas = transacoesMes.filter(t => t.tipo === 'Despesa' || t.tipo === 'Despesa do cartão de crédito').reduce((sum, t) => sum + t.valor, 0);
+    
+    const dadosParaChat = {
+      mes: selectedMonth,
+      totalEntradas,
+      totalSaidas,
+      qtdTransacoes: transacoesMes.length
+    };
+
+    const { data, error } = await supabase.functions.invoke('gemini', {
+      body: { 
+        action: 'chat', 
+        payload: { 
+          history: appState.chatHistory, 
+          personality: appState.personality, 
+          dadosJSON: dadosParaChat, 
+          newMessage: message 
+        } 
+      }
+    });
+
+    if (error) throw error;
+    if (data && data.error) throw new Error(data.error);
+
+    let textoIA = data.result.candidates[0].content.parts[0].text;
+    
+    // TRATAMENTO CONTRA XSS: Escapar o HTML gerado pela IA (prevenção de prompt injection)
+    let textoIAEscapado = escapeHTML(textoIA);
+    
+    // Aplica a formatação de negrito apenas no texto seguro
+    let textoIARender = textoIAEscapado.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    aiBubble.innerHTML = textoIARender;
+
+    if (message) {
+      appState.chatHistory.push({ role: 'user', parts: [{ text: message }] });
+    }
+    // Salvamos o texto original da IA no histórico (para manter o contexto bruto para o Gemini)
+    appState.chatHistory.push({ role: 'model', parts: [{ text: textoIA }] });
+    
+  } catch (error) {
+    console.error("Erro no chat:", error);
+    aiBubble.innerHTML = `<span style="color: red;">❌ Falha na conexão: ${error.message}</span>`;
+  }
+  
+  chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
+}

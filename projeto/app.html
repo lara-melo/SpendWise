@@ -391,6 +391,22 @@
             </div>
           </div>
 
+          <!-- Seção do Chat Interativo do Mentor IA -->
+          <div class="mentor-chat-panel" id="mentor-chat-panel" style="display: none;">
+            <div class="chat-header">
+              <i class="fa-solid fa-user-tie"></i> Seu Mentor Financeiro IA
+            </div>
+            <div class="chat-history" id="chat-history">
+              <!-- Mensagens do chat serão inseridas aqui dinamicamente -->
+            </div>
+            <div class="chat-input-area">
+              <input type="text" id="chat-input" placeholder="Pergunte ao Mentor (ex: Como reduzir meus gastos com lazer?)..." autocomplete="off">
+              <button id="btn-send-chat" title="Enviar Mensagem">
+                <i class="fa-solid fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -431,6 +447,49 @@
       </div>
 
     </main>
+  </div>
+
+  <!-- Modal de Configuração de Personalidade da IA -->
+  <div id="ai-personality-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content personality-modal">
+      <div class="modal-header" style="text-align: center; border-bottom: none; margin-bottom: 10px;">
+        <i class="fa-solid fa-robot" style="font-size: 3rem; color: var(--color-green); margin-bottom: 15px;"></i>
+        <h2>Configure o seu Mentor IA</h2>
+        <p style="color: var(--color-text-muted); font-size: 0.95rem; margin-top: 10px;">
+          Como você gostaria que o Mentor Financeiro se comunicasse com você?
+        </p>
+      </div>
+      
+      <div class="personality-options" style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
+        <label class="personality-option">
+          <input type="radio" name="ai_personality" value="Educador Didático" checked>
+          <div class="option-card">
+            <h4><i class="fa-solid fa-chalkboard-user"></i> Educador Didático</h4>
+            <p>Explicações passo a passo, vocabulário simples e tom encorajador.</p>
+          </div>
+        </label>
+        
+        <label class="personality-option">
+          <input type="radio" name="ai_personality" value="Consultor Direto e Sarcástico">
+          <div class="option-card">
+            <h4><i class="fa-solid fa-bolt"></i> Consultor Direto (e Sarcástico)</h4>
+            <p>Sem enrolação, focado em resultados, com um toque de humor ácido nas broncas.</p>
+          </div>
+        </label>
+        
+        <label class="personality-option">
+          <input type="radio" name="ai_personality" value="Coach Motivacional">
+          <div class="option-card">
+            <h4><i class="fa-solid fa-fire"></i> Coach Motivacional</h4>
+            <p>Energia alta, foco em mentalidade de riqueza e metas de longo prazo.</p>
+          </div>
+        </label>
+      </div>
+
+      <button id="btn-save-personality" class="btn-primary" style="width: 100%; padding: 12px; font-size: 1rem;">
+        Salvar Personalidade e Continuar <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
   </div>
 
   <!-- Scripts Lógicos do Portal -->
