@@ -348,13 +348,13 @@ const removeTransaction = async (id) => {
     return;
   }
   
-  const t = appState.transacoes.find(tx => tx.id === id);
+  const t = appState.transacoes.find(tx => String(tx.id) === String(id));
   if (t) {
     if (t.tipo === 'Saldo inicial') appState.mensal[t.mes].saldoInicial = 0;
     else if (t.tipo === 'Saldo final') appState.mensal[t.mes].saldoFinalCadastrado = 0;
   }
   
-  appState.transacoes = appState.transacoes.filter(tx => tx.id !== id);
+  appState.transacoes = appState.transacoes.filter(tx => String(tx.id) !== String(id));
   recalculateAll();
 };
 
@@ -521,11 +521,10 @@ const renderSheetTransactions = (selectedMonth, transacoesMes) => {
 let chartCategorias, chartSaldo, chartHistorico;
 
 window.renderRelatorios = async () => {
-    const dataAtual = new Date();
-    const mesAtualIndex = dataAtual.getMonth(); 
-    
     const nomesMeses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-    const mesAtualNome = nomesMeses[mesAtualIndex];
+    
+    const mesAtualNome = appState.selectedMonth || 'Maio';
+    const mesAtualIndex = nomesMeses.indexOf(mesAtualNome) !== -1 ? nomesMeses.indexOf(mesAtualNome) : new Date().getMonth();
 
     const transacoesMes = appState.transacoes.filter(t => t.mes === mesAtualNome);
 
